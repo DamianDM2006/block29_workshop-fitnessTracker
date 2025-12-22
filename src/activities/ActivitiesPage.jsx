@@ -6,6 +6,7 @@ import ActivityForm from "./ActivityForm";
 
 export default function ActivitiesPage() {
   const [activities, setActivities] = useState([]);
+  console.log(`selected`, selectedActivityId);
 
   const syncActivities = async () => {
     const data = await getActivities();
