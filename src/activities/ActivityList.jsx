@@ -2,23 +2,42 @@ import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 
 
-export default function ActivityList({ activities }) {
+export default function ActivityList({ activities, syncActivities }) {
   const [selectedActivityId, setSelectedActivityId] = useState();
   console.log(selectedActivityId);
   
   return (
     <ul>
       {activities.map((activity) => (
-        <li
+        <ActivityLi 
           key={activity.id}
-          onClick={() => setSelectedActivityId(activity.id) }
-          className={activity.id === selectedActivityId ? "selected" : "" }
-        >{activity.name}</li>
+          activity={activity}
+          syncActivities={syncActivities}
+        />
       ))}
     </ul>
   );
 }
 
-const OneActivity = () => {
 
+const ActivityLi = ({activity, syncActivities }) => {
+ const { token } = useAuth();
+ const [error, setError] = useState(null);
+
+ const tryDelete = async () => {
+  try {
+    await deleteActivity(token, activity.id);
+    synActivities();
+  } catch (e) {
+    setError(e.message);
+  }
+ };
+
+ return (
+  <li>
+    <p>{activity.name}</p>
+    {token && <button onClick={tryDelete}>Delete</button>}
+    {error && <p role="alert">{error}</p>}
+  </li>
+ );
 }
